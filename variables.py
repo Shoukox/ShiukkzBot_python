@@ -54,14 +54,13 @@ class exercise:
 users = []
 groups = []
 
-#token = '1328219094:AAEqOYjjONDQJzwpAjOXLn1zaLMvNXBszTo' #stest
-token = '1077875912:AAGoe-3mixyIv22Rf7IWHmstIc-Qh8bunb4' #shiukkzbot
+token = ''
 
-DB_NAME = 'd2kru73vr8oo00'
-DB_USER = 'zsahzvuuazofog'
-DB_PASS = 'dd3a2ca9e3be7bdcf63e0cfdc611a81857ff48c0e567cedc9e2bc0b230783f28'
-DB_HOST = 'ec2-18-204-101-137.compute-1.amazonaws.com'
-DB_PORT = '5432'
+DB_NAME = ''
+DB_USER = ''
+DB_PASS = ''
+DB_HOST = ''
+DB_PORT = ''
 
 DEFAULT_LANGUAGE = 'ru'
 BANDIT_SMILES = ["👻", "🎱", "💥", "🍄", "🦆", "🐴", "🌑", "🤡", "🌕", "🌒", "🌖", "🌓", "🐞", "🐭", "🎢", "⚡", "💊" ]
