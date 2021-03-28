@@ -1,14 +1,14 @@
-import psycopg2
+import psycopg2, variables
 
 
 class database:
     def __init__(self):
         self.connect = psycopg2.connect(
-            database="shiukkz",
-            user="postgres",
-            password="5202340",
-            host="127.0.0.1",
-            port="1337"
+            database=variables.DB_NAME,
+            user=variables.DB_USER,
+            password=variables.DB_PASS,
+            host=variables.DB_HOST,
+            port=variables.DB_PORT
         )
         self.cursor = self.connect.cursor()
 

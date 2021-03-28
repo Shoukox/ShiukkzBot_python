@@ -14,13 +14,15 @@ def checkCallback(update: Update, context: CallbackContext):
         callback = update.callback_query
         ab = callback.data.split(' ')
         ind = other.getGroupIndexFromGroupsList(int(ab[0]))
+        uind = other.getUserIndexFromUsersList(callback.from_user.id)
+
+        lang = variables.groups[ind].language
 
         # checking, do we have this user
-        if (other.getUserIndexFromUsersList(callback.from_user.id) is None):
+        if (uind is None):
             variables.users.append(
                 variables.User(id=callback.from_user.id, name=callback.from_user.first_name, username=callback.from_user.username))
-
-        uind = other.getUserIndexFromUsersList(callback.from_user.id)
+            uind = len(variables.users)-1
 
         if (variables.users[uind] not in variables.groups[ind].chatMembers):
             variables.groups[ind].chatMembers.append(variables.users[uind])
@@ -34,6 +36,9 @@ def checkCallback(update: Update, context: CallbackContext):
                 if(None in variables.groups[ind].xo.players):
                     if(variables.groups[ind].xo.field[index] == 0):
                         flag = True
+                        if (variables.users[uind].balance < variables.groups[ind].rock.coins):
+                            callbackAnswer += other.proc(other.getl(lang).error_noCoins) + '\n'
+                            break
                         if(variables.groups[ind].xo.steps % 2 == 0) and (variables.groups[ind].xo.players[0] is None):
                             variables.groups[ind].xo.field[index] = 1
                             variables.groups[ind].xo.players[0] = [callback.from_user.id, callback.from_user.full_name]
@@ -111,6 +116,9 @@ def checkCallback(update: Update, context: CallbackContext):
         if(variables.groups[ind].rock.isPlaying):
             if(ab[1] == 'rock'):
                 if(None in variables.groups[ind].rock.players):
+                    if (variables.users[uind].balance < variables.groups[ind].rock.coins):
+                        callbackAnswer += other.proc(other.getl(lang).error_noCoins) + '\n'
+                        break
                     if(variables.groups[ind].rock.players[0] is None):
                         variables.groups[ind].rock.players[0] = [callback.from_user.id, callback.from_user.full_name, variables.groups[ind].rock.icons[int(ab[2])-1]]
                         variables.groups[ind].rock.chosen += variables.groups[ind].rock.icons[int(ab[2])-1]
@@ -144,9 +152,13 @@ def checkCallback(update: Update, context: CallbackContext):
                     uind2 = other.getUserIndexFromUsersList(variables.groups[ind].rock.players[1][0])
                     variables.users[uind1].gamesplayed += 1
                     variables.users[uind2].gamesplayed += 1
-                    if(win is not None):
-                        variables.users[uind1].balance += variables.groups[ind].rock.coins if (win[0] == variables.groups[ind].rock.players[0][0]) else -variables.groups[ind].rock.coins
-                        variables.users[uind2].balance += variables.groups[ind].rock.coins if (win[0] == variables.groups[ind].rock.players[1][0]) else -variables.groups[ind].rock.coins
+                    if(win is not None):#win 1 - win 2
+                        if (win[0] == variables.groups[ind].rock.players[0][0]):
+                            variables.users[uind1].balance += variables.groups[ind].rock.coins
+                            variables.users[uind2].balance -= variables.groups[ind].rock.coins
+                        else:
+                            variables.users[uind1].balance -= variables.groups[ind].rock.coins
+                            variables.users[uind2].balance += variables.groups[ind].rock.coins
                         datab.InsertOrUpdateUsersTable(variables.users[uind1].id, variables.users[uind1].name, variables.users[uind1].username, variables.users[uind1].balance, variables.users[uind1].gamesplayed)
                         datab.InsertOrUpdateUsersTable(variables.users[uind2].id, variables.users[uind2].name, variables.users[uind2].username, variables.users[uind2].balance, variables.users[uind2].gamesplayed)
                     variables.groups[ind].gamesplayed += 1

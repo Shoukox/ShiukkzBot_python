@@ -14,6 +14,7 @@ def check(update: Update, context: CallbackContext):
     is_group = (message.chat.id != message.from_user.id)
     ind = other.getGroupIndexFromGroupsList(message.chat.id)
     uind = other.getUserIndexFromUsersList(message.from_user.id)
+    lang = variables.DEFAULT_LANGUAGE
 
     # checking, do we have this group
     if (ind is None) \
@@ -34,25 +35,27 @@ def check(update: Update, context: CallbackContext):
 
     if(command[0] == '/'):
         if (command == '/start'):
-            start(update, context)
+            start(update, context, ind, uind, is_group, lang)
         elif(command == '/help'):
-            help(update, context)
+            help(update, context, ind, uind, is_group, lang)
         elif(command == '/balance'):
-            balance(update, context)
+            balance(update, context, ind, uind, is_group, lang)
         elif(command == '/bonus'):
-            bonus(update, context)
+            bonus(update, context, ind, uind, is_group, lang)
         elif(command == '/chat_stats'):
-            chat_stats(update, context)
+            chat_stats(update, context, ind, uind, is_group, lang)
         elif(command == '/global_stats'):
-            global_stats(update, context)
+            global_stats(update, context, ind, uind, is_group, lang)
         elif(command == '/random'):
-            randomNumber(update, context)
+            randomNumber(update, context, ind, uind, is_group, lang)
         elif(command == '/flip'):
-            flip(update, context)
+            flip(update, context, ind, uind, is_group, lang)
         elif (command == '/pic'):
-            pic(update, context)
+            pic(update, context, ind, uind, is_group, lang)
         elif(command == '/gachi'):
-            gachi(update, context)
+            gachi(update, context, ind, uind, is_group, lang)
+        elif (command== '/sendm'):
+            sendm(update, context, ind, uind, is_group, lang)
         #games
         elif(command == '/bandit'):
             bandit(update, context)
@@ -60,31 +63,24 @@ def check(update: Update, context: CallbackContext):
             xo(update, context)
         elif (command == '/rock'):
             rock(update, context)
+    else:
+        if(message.text == '@everyone'):
+            everyone(update, context)
 
-def start(update: Update, context:CallbackContext):
+def start(update: Update, context:CallbackContext, ind: int, uind: int, is_group:bool, lang:str):
     message = update.effective_message
-
-    ind = other.getGroupIndexFromGroupsList(message.chat.id)
-    lang = other.getLanguage(ind)
 
     sendtext = other.proc(other.getl(lang).command_start)
     context.bot.send_message(message.chat.id, sendtext, reply_to_message_id=message.message_id, parse_mode='HTML')
 
-def help(update: Update, context:CallbackContext):
+def help(update: Update, context:CallbackContext, ind: int, uind: int, is_group:bool, lang:str):
     message = update.effective_message
-
-    ind = other.getGroupIndexFromGroupsList(message.chat.id)
-    lang = other.getLanguage(ind)
 
     sendtext = other.proc(other.getl(lang).command_help)
     context.bot.send_message(message.chat.id, sendtext, reply_to_message_id=message.message_id, parse_mode='HTML')
 
-def bonus(update: Update, context:CallbackContext):
+def bonus(update: Update, context:CallbackContext, ind: int, uind: int, is_group:bool, lang:str):
     message = update.effective_message
-
-    ind = other.getGroupIndexFromGroupsList(message.chat.id)
-    uind = other.getUserIndexFromUsersList(message.from_user.id)
-    lang = other.getLanguage(ind)
 
     if(not variables.users[uind].bonusReady):
         sendtext = other.proc(other.getl(lang).error_bonus_notReady, [f'{variables.BONUS_DELAY}'])
@@ -105,15 +101,30 @@ def bonus(update: Update, context:CallbackContext):
     context.bot.send_message(message.chat.id, other.proc(other.getl(lang).command_bonus, [f'{variables.BONUS_VALUE}']), reply_to_message_id=message.message_id, parse_mode='HTML')
     context.job_queue.run_once(bonusTick, 60*variables.BONUS_DELAY, name=f'bonus{variables.users[uind].id}', context=f'{uind}')
 
+    from db import datab
+    datab.InsertOrUpdateUsersTable(variables.users[uind].id, variables.users[uind].name, variables.users[uind].username,
+                                   variables.users[uind].balance, variables.users[uind].gamesplayed)
+
+def sendm(update: Update, context:CallbackContext, ind: int, uind: int, is_group:bool, lang:str):
+    message = update.effective_message
+
+    context.bot.delete_message(message.chat.id, message.message_id)
+    context.bot.send_message(message.chat.id, ' '.join(message.text.split(' ')[1:]), reply_to_message_id=message.reply_to_message.message_id if message.reply_to_message is not None else None)
+
+def everyone(update: Update, context: CallbackContext, ind: int, uind: int, is_group:bool, lang:str):
+    message = update.effective_message
+
+    context.bot.send_message(message.chat.id, f'''{', '.join([f'<a href="tg://user?id={item.id}">{item.name}</a>' for item in variables.groups[ind].chatMembers])}\n\nВроде всех призвал...''', parse_mode='HTML')
+
 #games
-def bandit(update: Update, context:CallbackContext):
+def bandit(update: Update, context:CallbackContext, ind: int, uind: int, is_group:bool, lang:str):
     message = update.effective_message
     ab = message.text.split(' ')
 
-    ind = other.getGroupIndexFromGroupsList(message.chat.id)
-    uind = other.getUserIndexFromUsersList(message.from_user.id)
-
-    lang = other.getLanguage(ind)
+    if(not is_group):
+        sendtext = other.proc(other.getl(lang).error_onlyGroup)
+        context.bot.send_message(message.chat.id, sendtext, reply_to_message_id=message.message_id)
+        return
     if(len(ab) == 1):
         sendtext = other.proc(other.getl(lang).error_bandit_coinsNotEntered)
         context.bot.send_message(message.chat.id, sendtext, reply_to_message_id=message.message_id)
@@ -123,7 +134,7 @@ def bandit(update: Update, context:CallbackContext):
         context.bot.send_message(message.chat.id, sendtext, reply_to_message_id=message.message_id)
         return
     if(int(ab[1]) > variables.users[uind].balance):
-        sendtext = other.proc(other.getl(lang).error_bandit_noCoins)
+        sendtext = other.proc(other.getl(lang).error_noCoins)
         context.bot.send_message(message.chat.id, sendtext, reply_to_message_id=message.message_id)
         return
     if(variables.groups[ind].isPlaying):
@@ -165,8 +176,6 @@ def bandit(update: Update, context:CallbackContext):
             coff *= random.randint(0, 40)
         elif (smile == '🎱'):
             coff *= 8
-        elif (smile == '💣'):
-            coff *= 0.1
         elif (smile == '🐴'):
             coff *= 0.8
         elif (smile == '🦆'):
@@ -214,15 +223,10 @@ def bandit(update: Update, context:CallbackContext):
     variables.groups[ind].isPlaying = True
     variables.users[uind].balance -= coins
 
-def xo(update: Update, context:CallbackContext):
+def xo(update: Update, context:CallbackContext, ind: int, uind: int, is_group:bool, lang:str):
     message = update.effective_message
     ab = message.text.split(' ')
 
-    ind = other.getGroupIndexFromGroupsList(message.chat.id)
-    uind = other.getUserIndexFromUsersList(message.from_user.id)
-    is_group = (message.chat.id != message.from_user.id)
-
-    lang = other.getLanguage(ind)
     if(not is_group):
         sendtext = other.proc(other.getl(lang).error_onlyGroup)
         context.bot.send_message(message.chat.id, sendtext, reply_to_message_id=message.message_id)
@@ -236,7 +240,7 @@ def xo(update: Update, context:CallbackContext):
         context.bot.send_message(message.chat.id, sendtext, reply_to_message_id=message.message_id)
         return
     if(int(ab[1]) > variables.users[uind].balance):
-        sendtext = other.proc(other.getl(lang).error_bandit_noCoins)
+        sendtext = other.proc(other.getl(lang).error_noCoins)
         context.bot.send_message(message.chat.id, sendtext, reply_to_message_id=message.message_id)
         return
     if(variables.groups[ind].isPlaying):
@@ -257,16 +261,10 @@ def xo(update: Update, context:CallbackContext):
     variables.groups[ind].isPlaying = True
     variables.groups[ind].xo.isPlaying = True
 
-def rock(update: Update, context:CallbackContext):
+def rock(update: Update, context:CallbackContext, ind: int, uind: int, is_group:bool, lang:str):
     message = update.effective_message
     ab = message.text.split(' ')
 
-    ind = other.getGroupIndexFromGroupsList(message.chat.id)
-    uind = other.getUserIndexFromUsersList(message.from_user.id)
-
-    is_group = (message.chat.id != message.from_user.id)
-
-    lang = other.getLanguage(ind)
     if (not is_group):
         sendtext = other.proc(other.getl(lang).error_onlyGroup)
         context.bot.send_message(message.chat.id, sendtext, reply_to_message_id=message.message_id)
@@ -280,7 +278,7 @@ def rock(update: Update, context:CallbackContext):
         context.bot.send_message(message.chat.id, sendtext, reply_to_message_id=message.message_id)
         return
     if (int(ab[1]) > variables.users[uind].balance):
-        sendtext = other.proc(other.getl(lang).error_bandit_noCoins)
+        sendtext = other.proc(other.getl(lang).error_noCoins)
         context.bot.send_message(message.chat.id, sendtext, reply_to_message_id=message.message_id)
         return
     if (variables.groups[ind].isPlaying):
@@ -298,14 +296,10 @@ def rock(update: Update, context:CallbackContext):
                                                           f'{variables.groups[ind].rock.players[1][2] if variables.groups[ind].rock.players[1] is not None else None}'])
     context.bot.send_message(variables.groups[ind].id, sendtext, reply_markup=ik)
 
-def pic(update: Update, context:CallbackContext):
+def pic(update: Update, context:CallbackContext, ind: int, uind: int, is_group:bool, lang:str):
     message = update.effective_message
     ab = message.text.split(' ')
 
-    ind = other.getGroupIndexFromGroupsList(message.chat.id)
-    uind = other.getUserIndexFromUsersList(message.from_user.id)
-
-    lang = other.getLanguage(ind)
     if(len(ab) == 1):
         sendtext= other.proc(other.getl(lang).error_pic_noTag)
         context.bot.send_message(message.chat.id, sendtext, parse_mode='HTML')
@@ -329,46 +323,34 @@ def pic(update: Update, context:CallbackContext):
     context.bot.send_photo(message.chat.id,  temp['file_url'], caption='Tags: '+temp['tag_string'])
     print('done')
 
-def gachi(update: Update, context:CallbackContext):
+def gachi(update: Update, context:CallbackContext, ind: int, uind: int, is_group:bool, lang:str):
     message = update.effective_message
     ab = message.text.split(' ')
 
-    ind = other.getGroupIndexFromGroupsList(message.chat.id)
-    uind = other.getUserIndexFromUsersList(message.from_user.id)
-
-    lang = other.getLanguage(ind)
     if(len(ab) == 1):
         joinchar = '\n'
         sendtext = other.proc(other.getl(lang).error_gachi_noText, [f'{joinchar.join([f"<b>{item}</b>" for item in variables.gachi.keys()])}'])
         context.bot.send_message(message.chat.id, sendtext, parse_mode='HTML')
         return
-    file_id = ''
+    file_path = ''
     for item in variables.gachi.keys():
         if(item.startswith(' '.join(ab[1:]))):
-            file_id = variables.gachi[item]
+            file_path = variables.gachi[item]
             break
-    if(file_id == ''):
+    if(file_path == ''):
         sendtext = other.proc(other.getl(lang).error_gachi_notFound)
         context.bot.send_message(message.chat.id, sendtext)
         return
-    context.bot.send_audio(message.chat.id, file_id)
+    context.bot.send_audio(message.chat.id, open(file_path, 'rb'))
 
-def balance(update: Update, context: CallbackContext):
+def balance(update: Update, context: CallbackContext, ind: int, uind: int, is_group:bool, lang:str):
     message = update.effective_message
-
-    ind = other.getGroupIndexFromGroupsList(message.chat.id)
-    uind = other.getUserIndexFromUsersList(message.from_user.id)
-    lang = other.getLanguage(ind)
 
     context.bot.send_message(message.chat.id, variables.users[uind].balance, reply_to_message_id=message.message_id)
 
-def chat_stats(update: Update, context: CallbackContext):
+def chat_stats(update: Update, context: CallbackContext, ind: int, uind: int, is_group:bool, lang:str):
     message = update.effective_message
 
-    ind = other.getGroupIndexFromGroupsList(message.chat.id)
-    is_group = (message.chat.id != message.from_user.id)
-
-    lang = other.getLanguage(ind)
     if (not is_group):
         sendtext = other.proc(other.getl(lang).error_onlyGroup)
         context.bot.send_message(message.chat.id, sendtext, reply_to_message_id=message.message_id)
@@ -384,11 +366,9 @@ def chat_stats(update: Update, context: CallbackContext):
 
     context.bot.send_message(message.chat.id, text, parse_mode='HTML')
 
-def global_stats(update: Update, context: CallbackContext):
+def global_stats(update: Update, context: CallbackContext, ind: int, uind: int, is_group:bool, lang:str):
     message = update.effective_message
 
-    ind = other.getGroupIndexFromGroupsList(message.chat.id)
-    lang = other.getLanguage(ind)
     text = other.proc(other.getl(lang).command_global_stats)
     i = 0
     for item in sorted(variables.users, key=lambda e: e.balance, reverse=True):
@@ -398,14 +378,11 @@ def global_stats(update: Update, context: CallbackContext):
             break
 
     context.bot.send_message(message.chat.id, text, parse_mode='HTML')
-def randomNumber(update: Update, context: CallbackContext):
+
+def randomNumber(update: Update, context: CallbackContext, ind: int, uind: int, is_group:bool, lang:str):
     message = update.effective_message
     ab = message.text.split(' ')
 
-    ind = other.getGroupIndexFromGroupsList(message.chat.id)
-    uind = other.getUserIndexFromUsersList(message.from_user.id)
-
-    lang = other.getLanguage(ind)
     if(len(ab) == 1):
         sendtext = other.proc(other.getl(lang).error_random_noNumbers)
         context.bot.send_message(message.chat.id, sendtext)
@@ -416,14 +393,9 @@ def randomNumber(update: Update, context: CallbackContext):
                                                             f'{random.randint(numbers[0], numbers[1])}'])
     context.bot.send_message(message.chat.id, sendtext, parse_mode='HTML')
 
-def flip(update: Update, context: CallbackContext):
+def flip(update: Update, context: CallbackContext, ind: int, uind: int, is_group:bool, lang:str):
     message = update.effective_message
     ab = message.text.split(' ')
-
-    ind = other.getGroupIndexFromGroupsList(message.chat.id)
-    uind = other.getUserIndexFromUsersList(message.from_user.id)
-
-    lang = other.getLanguage(ind)
 
     coins = ('орёл', 'решка')
     sendtext = other.proc(other.getl(lang).command_flip, [f'{coins[random.randint(0,1)]}'])

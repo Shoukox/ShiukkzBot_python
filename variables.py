@@ -56,53 +56,60 @@ groups = []
 
 #token = '1328219094:AAEqOYjjONDQJzwpAjOXLn1zaLMvNXBszTo' #stest
 token = '1077875912:AAGoe-3mixyIv22Rf7IWHmstIc-Qh8bunb4' #shiukkzbot
+
+DB_NAME = 'd2kru73vr8oo00'
+DB_USER = 'zsahzvuuazofog'
+DB_PASS = 'dd3a2ca9e3be7bdcf63e0cfdc611a81857ff48c0e567cedc9e2bc0b230783f28'
+DB_HOST = 'ec2-18-204-101-137.compute-1.amazonaws.com'
+DB_PORT = '5432'
+
 DEFAULT_LANGUAGE = 'ru'
-BANDIT_SMILES = ["👻", "🎱", "💥", "🍄", "🦆", "🐴", "🌑", "🤡", "🌕", "🌒", "🌖", "🌓", "🐞", "🐭", "🎢", "⚡️", "💊", "💣" ]
+BANDIT_SMILES = ["👻", "🎱", "💥", "🍄", "🦆", "🐴", "🌑", "🤡", "🌕", "🌒", "🌖", "🌓", "🐞", "🐭", "🎢", "⚡", "💊" ]
 BONUS_VALUE = 100
 BONUS_DELAY = 10 #n minutes
 
-gachi = {'ass we can':'CQACAgIAAx0CVpXfWwACE6VgVn2-g_XVnktmKN-vL6BCYlkqnAACUgwAAl9IMEm497XG0Yx_uR4E',
-         'attention':'CQACAgIAAx0CVpXfWwACE6ZgVn2-gWotAALKVrntR78uL5w4qAACUwwAAl9IMEkLetAj8MUzXR4E',
-         'boy next door':'CQACAgIAAx0CVpXfWwACE6dgVn2-EN9M93gLpkKYgbvM7SBk1wACVgwAAl9IMEmV-XAIeZYGdh4E',
-         'come on lets go':'CQACAgIAAx0CVpXfWwACE6hgVn2-0YRuiNp_XXFu0BXzAAE-E54AAlgMAAJfSDBJkjYAAeemJvnjHgQ',
-         'deep dark fantasies':'CQACAgIAAx0CVpXfWwACE6lgVn2-EvjOak7fd-PAcW5enDvh_AACWgwAAl9IMEkxmfNfGI-2Ax4E',
-         'do you like what you see':'CQACAgIAAx0CVpXfWwACE6pgVn2-Tp4Gom5_dJ5xQzhrnmHzUQACXAwAAl9IMEnRL9UQguOMGh4E',
-         'dungeon master':'CQACAgIAAx0CVpXfWwACE6tgVn2-Si2AbYJ_R-4Hz7gzfRekXwACXQwAAl9IMEkDZYPQUvAjyh4E',
-         'fisting is 300$':'CQACAgIAAx0CVpXfWwACE6xgVn2-wh9FePEPy5wQC50qNBWsGAACXgwAAl9IMElseayNtMLb-h4E',
-	     'fuck you':'CQACAgIAAx0CVpXfWwACE65gVn2-WDJlYvS39BnBxiTaFmoQhAACYAwAAl9IMElgw9WyhgWgSR4E',
-         'fuck you leather man':'CQACAgIAAx0CVpXfWwACE61gVn2-UNnLh_CALWFGh3U4ktW5wwACXwwAAl9IMElsltMUCQgrQh4E',
-         'fuck you loud':'CQACAgIAAx0CVpXfWwACE69gVn2-dUlj2HVfHX78krwkwOoo7wACYQwAAl9IMElBEwl-B1hhHB4E',
-         'fucking slaves':'CQACAgIAAx0CVpXfWwACE7BgVn2-seEWNUnbCQZalW-BSWtb-QACYgwAAl9IMElIyZdXjSjheR4E',
-         'ganging up':'CQACAgIAAx0CVpXfWwACE7FgVn2-gllgbLeqAuKN9YbWBGClXQACYwwAAl9IMEmjKjXonbftXx4E',
-         'how you like that':'CQACAgIAAx0CVpXfWwACE7JgVn2-sbaAy5F8frWsPcCPJo8BtwACZgwAAl9IMEmQGKPsRi72LB4E',
-         'huh you like embarrasing me huh':'CQACAgIAAx0CVpXfWwACE7NgVn2-DiY8xXtEUbRCxYDOo991QgACZwwAAl9IMEmnLrlhGmuAkh4E',
-         'i dont do anal':'CQACAgIAAx0CVpXfWwACE7RgVn2-u6UOWWj4wvRSUF20EjafswACaAwAAl9IMEljnYodQyZyix4E',
-         '6 hot loads':'CQACAgIAAx0CVpXfWwACE7VgVn2-62fQJdOqFUKSQRXq92WBEwACagwAAl9IMEkqjmeBl9DBkR4E',
-         'i am an artist':'CQACAgIAAx0CVpXfWwACE7ZgVn2-iSDkyG5BuG3F870gcUOs_QACbAwAAl9IMEn-WLMqufCK3R4E',
-         'fucking cumming':'CQACAgIAAx0CVpXfWwACE7dgVn2-dIW63Mg6f2veNbgj-vBMFQACbQwAAl9IMEmvARHXeInYBx4E',
-         'bondage gay website':'CQACAgIAAx0CVpXfWwACE7hgVn2-EGVkvMxJF4-cZdNkI3SzEgACdAwAAl9IMElKCXxoVFBBWR4E',
-         'fucking deep':'CQACAgIAAx0CVpXfWwACE7lgVn2-sQc_Yd4I94br4DQaPRR-mwACdgwAAl9IMElqtRkHHD_gpB4E',
-         'spanking':'CQACAgIAAx0CVpXfWwACE7pgVn2-ISdN6Mln7_HbFNJF8yavkQACeQwAAl9IMElrE5qK7_ctxR4E',
-         'suck some dick':'CQACAgIAAx0CVpXfWwACE7tgVn2-O1DPOsQq6XbBJBMGJCa1dQACegwAAl9IMEkZKTT26Cx7VB4E',
-         'lube it up':'CQACAgIAAx0CVpXfWwACE7xgVn2-RuoLIf37jX3hP91CwQ2RtQACewwAAl9IMElM4cjGH2n00x4E',
-         'mmmmh':'CQACAgIAAx0CVpXfWwACE71gVn2-G1HMq6scMX5C7mWCKBCIYAACfAwAAl9IMEkeBf6gVTl40R4E',
-         'oh shit im sorry':'CQACAgIAAx0CVpXfWwACE75gVn2-e7mugywn7AitowxIOeCPeAACfgwAAl9IMEmlkC9n-nX1eB4E',
-         'yes sir':'CQACAgIAAx0CVpXfWwACE79gVn2-RBU_XHJZHmVys7EoT1jw7gACfwwAAl9IMEmidA3IfNJ4GR4E',
-         'orgasm1':'CQACAgIAAx0CVpXfWwACE8BgVn2-w3q0VQpka5CpjEJnOrLnagACgAwAAl9IMElEb5v_2Y7i3h4E',
-         'orgasm2':'CQACAgIAAx0CVpXfWwACE8FgVn2-0KPiPLysxJzBcacXIVXj5gACgQwAAl9IMElLKttEFllvbx4E',
-         'orgasm3':'CQACAgIAAx0CVpXfWwACE8JgVn2-rQssHnp5egdZgQZMZUbZmgACggwAAl9IMEmPcZoC_J2_Ih4E',
-         'orgasm4':'CQACAgIAAx0CVpXfWwACE8NgVn2-Mna5pwJMPi2yXeoLEbspkAACgwwAAl9IMElRQ7pPxMcwaB4E',
-         'orgasm5':'CQACAgIAAx0CVpXfWwACE8RgVn2-Swlc-XYYxzfsYIvnRkq1RwAChAwAAl9IMElipEMqnLrPOh4E',
-         'orgasm6':'CQACAgIAAx0CVpXfWwACE8VgVn2-2uXmgddBmp3W8A70dezKgAAChQwAAl9IMEkhKlMxhLm5kx4E',
-         'orgasm7':'CQACAgIAAx0CVpXfWwACE8ZgVn2-_CgrZcsfbMHhu-53l6LDXgAChwwAAl9IMEmmU1A2mSRKMx4E',
-         'yeah loud':'CQACAgIAAx0CVpXfWwACE8dgVn2-qUPCN0CjRkAOf7Q8luS8jAACjgwAAl9IMEm3laomMq-kjB4E',
-         'stick your finger in my ass':'CQACAgIAAx0CVpXfWwACE8hgVn2-Eyf8cAGdp5-RgGJQAfbgRAACjwwAAl9IMElE2BODWcDmbR4E',
-         'suction':'CQACAgIAAx0CVpXfWwACE8lgVn2-qJYuoJOnQoGu-Psh2dLTrAACkAwAAl9IMEl-zdtpbbisih4E',
-         'take it boy':'CQACAgIAAx0CVpXfWwACE8pgVn2-hiiHUk0K1PGlqDVMYpTPNwACkgwAAl9IMEliFM6lHEHXmh4E',
-         'thank you sir':'CQACAgIAAx0CVpXfWwACE8tgVn2-Z9cBM2yGzGYEEPmMkIU4EAACkwwAAl9IMEkukBIZTW6FAh4E',
-         'that turns me on':'CQACAgIAAx0CVpXfWwACE8xgVn2-Iu3QoV5vxYsXKoaN3Tl4EgAClAwAAl9IMEmOw8UlTHsjKh4E',
-         'the semen arsonist':'CQACAgIAAx0CVpXfWwACE81gVn2-CxrHHx13wpxLEXS3bUXr2wAClwwAAl9IMEmsLGiSu4h_Sh4E',
-         'what the hell are you two doing':'CQACAgIAAx0CVpXfWwACE85gVn2-90FDsTBueG2OdqY__GiqiQACmgwAAl9IMElffNg3KMUNPx4E',
-         'woo':'CQACAgIAAx0CVpXfWwACE89gVn2-1qOV7Qme2ynNJhxudSzgkgACnAwAAl9IMEnJXpUfxXdNTh4E'}
+gachi = {'ass we can':'gachi/Ass we can.mp3',
+         'attention':'gachi/ATTENTION.mp3',
+         'boy next door':'gachi/Boy next door.mp3',
+         'come on lets go':'gachi/come on lets go.mp3',
+         'deep dark fantasies':'gachi/Deep dark fantasies.mp3',
+         'do you like what you see':'gachi/Do you like what you see.mp3',
+         'dungeon master':'gachi/Dungeon master.mp3',
+         'fisting is 300$':'gachi/Fisting is 300 $.mp3',
+	     'fuck you':'gachi/fuck you....mp3',
+         'fuck you leather man':'gachi/Fuck you leather man.mp3',
+         'fuck you loud':'gachi/FUCK YOU.mp3',
+         'fucking slaves':'gachi/Fucking slaves get your ass back here.mp3',
+         'ganging up':'gachi/ganging up.mp3',
+         'how you like that':'gachi/HOW U LIKE THAT.mp3',
+         'huh you like embarrasing me huh':'gachi/HUH U LIKE EMBARRASING ME HUH.mp3',
+         'i dont do anal':'gachi/I dont do Anal.mp3',
+         '6 hot loads':'gachi/i wanna see 6 hot loads.mp3',
+         'i am an artist':'gachi/Iam an artist.mp3',
+         'fucking cumming':'gachi/Iam cumming.mp3',
+         'bondage gay website':'gachi/Its bondage.mp3',
+         'fucking deep':'gachi/Its so fucking deep.mp3',
+         'spanking':'gachi/Lash of the spanking.mp3',
+         'suck some dick':'gachi/Lets suck some dick.mp3',
+         'lube it up':'gachi/Lube it up.mp3',
+         'mmmmh':'gachi/Mmmmh.mp3',
+         'oh shit im sorry':'gachi/Oh shit iam sorry.mp3',
+         'yes sir':'gachi/Oh yes sir.mp3',
+         'orgasm1':'gachi/Orgasm 1.mp3',
+         'orgasm2':'gachi/Orgasm 2.mp3',
+         'orgasm3':'gachi/Orgasm 3.mp3',
+         'orgasm4':'gachi/Orgasm 4.mp3',
+         'orgasm5':'gachi/Orgasm 5.mp3',
+         'orgasm6':'gachi/Orgasm 6.mp3',
+         'orgasm7':'gachi/RIP EARS ORGASM.mp3',
+         'yeah loud':'gachi/Spit YEEEEEAAAAHHH.mp3',
+         'stick your finger in my ass':'gachi/Stick your finger in my ass.mp3',
+         'suction':'gachi/Suction.mp3',
+         'take it boy':'gachi/Take it boy.mp3',
+         'thank you sir':'gachi/Thank you sir.mp3',
+         'that turns me on':'gachi/That turns me on.mp3',
+         'the semen arsonist':'gachi/The semen.mp3',
+         'what the hell are you two doing':'gachi/What the hell u 2 doing.mp3',
+         'woo':'gachi/WOO.mp3'}
 
 

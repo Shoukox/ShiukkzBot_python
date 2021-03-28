@@ -1,7 +1,7 @@
 from telegram import User
 from telegram.ext import CallbackContext
 from locals import texts
-import variables
+import variables, random
 
 
 def getLanguage(ind:int):
@@ -19,8 +19,22 @@ def getUserIndexFromUsersList(user_id: int):
             return i
     return None
 
+def morning(context: CallbackContext):
+    for ind in range(len(variables.groups)):
+        lang = variables.groups[ind].language
+        sendtext = proc(getl(lang).morning)
+        rnd = random.randint(0, len(sendtext)-1)
+        context.bot.send_message(variables.groups[ind].id, sendtext[rnd])
+
+def night(context: CallbackContext):
+    for ind in range(len(variables.groups)):
+        lang = variables.groups[ind].language
+        sendtext = proc(getl(lang).night)
+        rnd = random.randint(0, len(sendtext)-1)
+        context.bot.send_message(variables.groups[ind].id, sendtext[rnd])
+
 def IsUserChatAdmin(user: User, chat_id: int, context: CallbackContext):
-    member = context.bot.get_chat_member(chat_id, user.id).result()
+    member = context.bot.get_chat_member(chat_id, user.id)
     if member.status in ("administrator", "creator"):
         return True
     return False
@@ -55,14 +69,18 @@ def getDataFromDB():
     users = datab.GetData('SELECT * FROM users')
 
     print('loading db...')
-    for item in groups:
-        try:
-            variables.groups.append(variables.Group(item[0], item[1], item[2]))
-        except Exception as e:
-            print(e)
     for item in users:
         try:
             variables.users.append(variables.User(item[0], item[1], item[2], item[3], item[4]))
+        except Exception as e:
+            print(e)
+
+    for item in groups:
+        try:
+            members = []
+            for item1 in item[3]:
+                members.append([item for item in variables.users if item.id == item1][0])
+            variables.groups.append(variables.Group(item[0], item[1], item[2], members))
         except Exception as e:
             print(e)
     print(f'db loaded: groups: {len(groups)}, users: {len(users)}')
